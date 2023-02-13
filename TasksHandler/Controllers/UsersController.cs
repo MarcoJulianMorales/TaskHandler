@@ -51,6 +51,12 @@ namespace TasksHandler.Controllers
             }
         }
 
+        [AllowAnonymous]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginDTO login)
