@@ -1,0 +1,13 @@
+TasksHandler.sln
+
+.vs/
+
+TasksHandler/bin/
+
+TasksHandler/obj/
+
+TasksHandler/wwwroot/favicon.ico
+
+TasksHandler/wwwroot/js/
+
+TasksHandler/wwwroot/lib/
