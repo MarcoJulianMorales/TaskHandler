@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using TasksHandler.Models;
 
 namespace TasksHandler.Controllers
@@ -10,12 +12,15 @@ namespace TasksHandler.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
+        private readonly ApplicationDbContext applicationDbContext;
 
         public UsersController(UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,
+            ApplicationDbContext applicationDbContext)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.applicationDbContext = applicationDbContext;
         }
 
         [AllowAnonymous]
@@ -52,8 +57,12 @@ namespace TasksHandler.Controllers
         }
 
         [AllowAnonymous]
-        public IActionResult Login()
+        public IActionResult Login(string message = null)
         {
+            if(message is not null)
+            {
+                ViewData["message"] = message;
+            }
             return View();
         }
 
@@ -84,6 +93,88 @@ namespace TasksHandler.Controllers
         {
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
             return RedirectToAction("Index", "Home");
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public ChallengeResult ExternalLogin(string provider, string returnUrl = null)
+        {
+            var UrlDirection = Url.Action("RegisterExternalUser", values: new { returnUrl });
+            var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, returnUrl);
+            return new ChallengeResult(provider, properties);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterExternalUser(string returnUrl = null, string remoteError = null)
+        {
+            returnUrl = returnUrl ?? Url.Content("~/");
+            var message = "";
+
+            if(remoteError is not null)
+            {
+                message = $"External provider error: {remoteError}";
+                return RedirectToAction("Login", routeValues: new { message });
+            }
+
+            var info = await signInManager.GetExternalLoginInfoAsync();
+            if(info is null)
+            {
+                message = "Error loading login external data";
+                return RedirectToAction("Login", routeValues: new { message });
+            }
+            var ExternalLoginResult = await signInManager.ExternalLoginSignInAsync(info.LoginProvider,
+                info.ProviderKey, isPersistent: true, bypassTwoFactor: true);
+
+            if(ExternalLoginResult.Succeeded)
+            {
+                return LocalRedirect(returnUrl);
+            }
+
+            string email = "";
+
+            if(info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+            {
+                email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            }
+            else
+            {
+                message = "Error reading the provider user email.";
+                return RedirectToAction("Login", routeValues: new { message });
+            }
+
+            var user = new IdentityUser { Email = email, UserName = email };
+            var CreatingUserResult = await userManager.CreateAsync(user);
+
+            if(!CreatingUserResult.Succeeded)
+            {
+                message = CreatingUserResult.Errors.First().Description;
+                return RedirectToAction("Login", routeValues: new { message });
+            }
+
+            var AddLoginResult = await userManager.AddLoginAsync(user, info);
+
+            if(AddLoginResult.Succeeded)
+            {
+                await signInManager.SignInAsync(user, isPersistent: true, info.LoginProvider);
+                return LocalRedirect(returnUrl);
+            }
+
+            message = "An error has occurred adding the login";
+                return RedirectToAction("Login", routeValues: new { message });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> List(string message = null)
+        {
+            var users = await applicationDbContext.Users.Select(u => new UserDTO
+            {
+                Email = u.Email
+            }).ToListAsync();
+
+            var model = new UsersListDTO();
+            model.Users = users;
+            model.Message= message;
+            return View(model);
         }
     }
 }
