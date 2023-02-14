@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TasksHandler.Models;
+using TasksHandler.Services;
 
 namespace TasksHandler.Controllers
 {
@@ -164,6 +165,7 @@ namespace TasksHandler.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles =Constants.RoleAdmin)]
         public async Task<IActionResult> List(string message = null)
         {
             var users = await applicationDbContext.Users.Select(u => new UserDTO
@@ -175,6 +177,33 @@ namespace TasksHandler.Controllers
             model.Users = users;
             model.Message= message;
             return View(model);
+        }
+        [HttpPost]
+        [Authorize(Roles = Constants.RoleAdmin)]
+        public async Task<IActionResult> MakeAdmin(string email)
+        {
+            var user = await applicationDbContext.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+            await userManager.AddToRoleAsync(user, Constants.RoleAdmin);
+
+            return RedirectToAction("List", routeValues: new { message = "Role successfully assigned to " + email });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Constants.RoleAdmin)]
+        public async Task<IActionResult> RemoveAdmin(string email)
+        {
+            var user = await applicationDbContext.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+            await userManager.RemoveFromRoleAsync(user, Constants.RoleAdmin);
+
+            return RedirectToAction("List", routeValues: new { message = "Role successfully removed from " + email });
         }
     }
 }
