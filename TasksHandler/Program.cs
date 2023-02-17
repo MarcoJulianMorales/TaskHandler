@@ -44,6 +44,8 @@ builder.Services.AddLocalization(options =>
     options.ResourcesPath = ("Resources");
 });
 
+builder.Services.AddTransient<IUsersService, UsersService>();
+
 var app = builder.Build();
 
 //var SuportedUIcultures = new[] { "es", "en" };
