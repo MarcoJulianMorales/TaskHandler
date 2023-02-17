@@ -19,7 +19,6 @@ namespace TasksHandler.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.Greet = stringLocalizer["Good morning"];
             return View();
         }
 
