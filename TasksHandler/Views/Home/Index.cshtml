@@ -37,6 +37,9 @@
     <script src="~/js/Tasks.js" asp-append-version="true"></script>
 
     <script>
+
+        const urlTasks = '/api/Tasks';
+
         function TasksListDTOfn () {
             var self = this;
             self.tasks = ko.observableArray([]);
@@ -60,10 +63,8 @@
         }
 
         const TasksListDTO = new TasksListDTOfn();
-        
-        setTimeout(() =>{
-            TasksListDTO.loading(false);
-        }, 1000);
+
+        getTasks();
 
         ko.applyBindings(TasksListDTO, document.getElementById("tasks-list-container"));
     </script>
