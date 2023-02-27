@@ -291,7 +291,7 @@ namespace TasksHandler.Migrations
                     b.Property<int>("Orden")
                         .HasColumnType("int");
 
-                    b.Property<string>("Tittle")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");

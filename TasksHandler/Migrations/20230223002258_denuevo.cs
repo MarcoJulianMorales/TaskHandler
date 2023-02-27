@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TasksHandler.Migrations
 {
     /// <inheritdoc />
-    public partial class Users : Migration
+    public partial class denuevo : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -156,6 +156,71 @@ namespace TasksHandler.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Tasks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Orden = table.Column<int>(type: "int", nullable: false),
+                    Creationdate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserCreatedId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tasks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tasks_AspNetUsers_UserCreatedId",
+                        column: x => x.UserCreatedId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AttachedFiles",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TaskId = table.Column<int>(type: "int", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Tittle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Orden = table.Column<int>(type: "int", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AttachedFiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AttachedFiles_Tasks_TaskId",
+                        column: x => x.TaskId,
+                        principalTable: "Tasks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Steps",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TasksId = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Done = table.Column<bool>(type: "bit", nullable: false),
+                    Orden = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Steps", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Steps_Tasks_TasksId",
+                        column: x => x.TasksId,
+                        principalTable: "Tasks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -194,6 +259,21 @@ namespace TasksHandler.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AttachedFiles_TaskId",
+                table: "AttachedFiles",
+                column: "TaskId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Steps_TasksId",
+                table: "Steps",
+                column: "TasksId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tasks_UserCreatedId",
+                table: "Tasks",
+                column: "UserCreatedId");
         }
 
         /// <inheritdoc />
@@ -215,7 +295,16 @@ namespace TasksHandler.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "AttachedFiles");
+
+            migrationBuilder.DropTable(
+                name: "Steps");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Tasks");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

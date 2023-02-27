@@ -8,7 +8,7 @@ namespace TasksHandler.Entities
         public int Id { get; set; }
         [StringLength(250)]
         [Required]
-        public string Tittle { get; set; }
+        public string Title { get; set; }
         public string Description { get; set; }
         public int Orden { get; set; }
         public DateTime Creationdate { get; set; }

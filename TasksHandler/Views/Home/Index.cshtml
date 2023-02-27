@@ -15,11 +15,11 @@
 <div id="tasks-list-container" class="text-center">
     <div class="text-start" data-bind="foreach: tasks">
         <div name="task" class="border mb-2 p-2" style="cursor:pointer">
-            <div data-bind="text: title, hidden:isNew" class="fw-bold">
+            <div data-bind="text: Title, hidden:isNew" class="fw-bold">
 
             </div>
-            <input type="text" name="title-task" autocomplete="off"
-            data-bind="value:title, visible: isNew, event:{focusout: focusoutTaskTitle}" />
+            <input type="text" name="Title-task" autocomplete="off"
+            data-bind="value:Title, visible: isNew, event:{focusout: focusoutTaskTitle}" />
         </div>
     </div>
 
@@ -53,10 +53,10 @@
             })
         }
 
-        function TasksElementListDTO({id, title}){
+        function TasksElementListDTO({id, Title}){
             var self = this;
             self.id = ko.observable(id);
-            self.title = ko.observable(title);
+            self.Title = ko.observable(Title);
             self.isNew = ko.pureComputed(function () {
                 return self.id() == 0;
             })

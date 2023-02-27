@@ -1,16 +1,16 @@
 ﻿function addNewTask() {
-    TasksListDTO.tasks.push(new TasksElementListDTO({ id: 0, title: '' }));
-    $("[name=title-task]").last().focus();
+    TasksListDTO.tasks.push(new TasksElementListDTO({ id: 0, Title: '' }));
+    $("[name=Title-task]").last().focus();
 }
 
 async function focusoutTaskTitle(task) {
-    const title = task.title();
-    if (!title) {
+    const Title = task.Title();
+    if (!Title) {
         TasksListDTO.tasks.pop();
         return;
     }
     //task.id(1);
-    const data = JSON.stringify(title);
+    const data = JSON.stringify(Title);
     const response = await fetch(urlTasks, {
         method: 'POST',
         body: data,

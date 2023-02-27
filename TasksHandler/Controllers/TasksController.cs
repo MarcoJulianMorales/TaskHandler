@@ -40,7 +40,7 @@ namespace TasksHandler.Controllers
 
             var task = new Tasks
             {
-                Tittle = title,
+                Title = title,
                 UserCreatedId = userId,
                 Creationdate = DateTime.UtcNow,
                 Orden = mayorOrden + 1

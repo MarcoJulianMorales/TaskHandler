@@ -12,8 +12,8 @@ using TasksHandler;
 namespace TasksHandler.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230214021101_AdminRol")]
-    partial class AdminRol
+    [Migration("20230223002258_denuevo")]
+    partial class denuevo
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -294,12 +294,17 @@ namespace TasksHandler.Migrations
                     b.Property<int>("Orden")
                         .HasColumnType("int");
 
-                    b.Property<string>("Tittle")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<string>("UserCreatedId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserCreatedId");
 
                     b.ToTable("Tasks");
                 });
@@ -375,6 +380,15 @@ namespace TasksHandler.Migrations
                         .IsRequired();
 
                     b.Navigation("task");
+                });
+
+            modelBuilder.Entity("TasksHandler.Entities.Tasks", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UserCreated")
+                        .WithMany()
+                        .HasForeignKey("UserCreatedId");
+
+                    b.Navigation("UserCreated");
                 });
 
             modelBuilder.Entity("TasksHandler.Entities.Tasks", b =>
