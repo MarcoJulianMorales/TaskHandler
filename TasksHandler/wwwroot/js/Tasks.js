@@ -4,13 +4,21 @@
 }
 
 async function focusoutTaskTitle(task) {
-    const Title = task.Title();
+    const Title = task.title();
     if (!Title) {
+        TasksListDTO.tasks.push(new TasksElementListDTO({ id: 0, title: '' }));
+        $("[name=title-task]").last().focus();
+    }
+}
+
+async function focusoutTaskTitle(task) {
+    const title = task.Title();
+    if (!title) {
         TasksListDTO.tasks.pop();
         return;
     }
     //task.id(1);
-    const data = JSON.stringify(Title);
+    const data = JSON.stringify(title);
     const response = await fetch(urlTasks, {
         method: 'POST',
         body: data,

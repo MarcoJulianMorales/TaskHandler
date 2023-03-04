@@ -53,10 +53,10 @@
             })
         }
 
-        function TasksElementListDTO({id, Title}){
+        function TasksElementListDTO({id, title}){
             var self = this;
             self.id = ko.observable(id);
-            self.Title = ko.observable(Title);
+            self.Title = ko.observable(title);
             self.isNew = ko.pureComputed(function () {
                 return self.id() == 0;
             })
