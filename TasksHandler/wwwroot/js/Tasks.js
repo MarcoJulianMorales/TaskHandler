@@ -59,3 +59,70 @@ async function getTasks() {
 
     TasksListDTO.loading(false);
 }
+
+async function updateTasksOrder() {
+    const ids = getTasksIds();
+    await sendTasksIdsToBackend(ids);
+
+    const sortedArray = TasksListDTO.tasks.sorted(function (a, b) {
+        return ids.indexOf(a.id().toString()) - ids.indexOf(b.id.toString());
+    });
+
+    TasksListDTO.tasks([]);
+    getTasks();
+}
+
+function getTasksIds() {
+    const ids = $("[name=Title-task]").map(function () {
+        return $(this).attr("data-id");
+    }).get();
+
+    return ids;
+}
+
+async function sendTasksIdsToBackend(ids) {
+    var data = JSON.stringify(ids);
+    await fetch(`${urlTasks}/sort`, {
+        method: 'POST',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+}
+
+ async function TaskClickHandler(task) {
+    if (task.isNew()) {
+        return;
+    }
+
+    const response = await fetch(`${urlTasks}/${task.id()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        HandleErrorApi(response);
+        return;
+    }
+
+    const json = await response.json();
+     console.log(json);
+
+     TaskEditVM.id = json.id;
+     TaskEditVM.title(json.Title);
+     TaskEditVM.description(json.description);
+
+}
+
+
+$(function () {
+    $("#reordenable").sortable({
+        axis: 'y',
+        stop: async function () {
+            await updateTasksOrder();
+        }
+        })
+})

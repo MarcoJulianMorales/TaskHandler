@@ -13,13 +13,13 @@
 </div>
 
 <div id="tasks-list-container" class="text-center">
-    <div class="text-start" data-bind="foreach: tasks">
-        <div name="task" class="border mb-2 p-2" style="cursor:pointer">
+    <div id="reordenable" class="text-start" data-bind="foreach: tasks">
+        <div name="task" class="border mb-2 p-2" style="cursor:pointer" data-bind="click: TaskClickHandler">
             <div data-bind="text: Title, hidden:isNew" class="fw-bold">
 
             </div>
             <input type="text" name="Title-task" autocomplete="off"
-            data-bind="value:Title, visible: isNew, event:{focusout: focusoutTaskTitle}" />
+            data-bind="value:Title, visible: isNew, attr:{'data-id':id}, event:{focusout: focusoutTaskTitle}" />
         </div>
     </div>
 
@@ -61,6 +61,12 @@
             self.isNew = ko.pureComputed(function () {
                 return self.id() == 0;
             })
+        }
+
+        const TaskEditVM = {
+            id: 0,
+            title: ko.observable(''),
+            description: ko.observable('')
         }
 
         const TasksListDTO = new TasksListDTOfn();

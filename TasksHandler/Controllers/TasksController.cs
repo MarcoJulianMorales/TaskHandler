@@ -37,6 +37,22 @@ namespace TasksHandler.Controllers
             return tasks;
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Tasks>> Get(int id)
+        {
+            var UserId = usersService.getUserId();
+
+            var task = await applicationDbContext.Tasks.FirstOrDefaultAsync(t => t.Id== id 
+            && t.UserCreatedId == UserId);
+
+            if(task is null)
+            {
+                return NotFound();
+            }
+
+            return task;
+        }
+
         [HttpPost]
         public async Task<ActionResult<Tasks>> Post([FromBody] string title)
         {
@@ -62,6 +78,37 @@ namespace TasksHandler.Controllers
             applicationDbContext.Add(task);
             await applicationDbContext.SaveChangesAsync();
             return task;
+        }
+
+        [HttpPost("sort")]
+        public async Task<IActionResult> Sort([FromBody] int[] ids)
+        {
+            var userId = usersService.getUserId();
+
+            var tasks = await applicationDbContext.Tasks
+                .Where(t => t.UserCreatedId == userId).ToListAsync();
+
+            var tasksId = tasks.Select(t => t.Id);
+
+            var idsTasksNotBelongToUser = ids.Except(tasksId).ToList();
+
+            if(idsTasksNotBelongToUser.Any())
+            {
+                return Forbid();
+            }
+
+            var tasksDictionary = tasks.ToDictionary(x => x.Id);
+
+            for(int i = 0; i<ids.Length; i++)
+            {
+                var id = ids[i];
+                var task = tasksDictionary[id];
+                task.Orden = i + 1;
+            }
+
+            await applicationDbContext.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }
