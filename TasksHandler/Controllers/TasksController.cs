@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TasksHandler.Entities;
+using TasksHandler.Models;
 using TasksHandler.Services;
 
 namespace TasksHandler.Controllers
@@ -10,18 +13,28 @@ namespace TasksHandler.Controllers
     {
         private readonly ApplicationDbContext applicationDbContext;
         private readonly IUsersService usersService;
+        private readonly IMapper mapper;
 
-        public TasksController(ApplicationDbContext applicationDbContext, 
-            IUsersService usersService)
+        public TasksController(
+            ApplicationDbContext applicationDbContext, 
+            IUsersService usersService,
+            IMapper mapper)
         {
             this.applicationDbContext = applicationDbContext;
             this.usersService = usersService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<List<Tasks>> Get()
+        public async Task<List<TaskDTO>> Get()
         {
-            return await applicationDbContext.Tasks.ToListAsync();
+            var UserId = usersService.getUserId();
+            var tasks = await applicationDbContext.Tasks.Where(t => t.UserCreatedId == UserId)
+                .OrderBy(t => t.Orden)
+                .ProjectTo<TaskDTO>(mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return tasks;
         }
 
         [HttpPost]

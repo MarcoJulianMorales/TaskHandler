@@ -31,7 +31,7 @@ async function focusoutTaskTitle(task) {
         const json = await response.json();
         task.id(json.id);
     } else {
-        //show up error meesage
+        HandleErrorApi(response);
     }
 }
 
@@ -46,6 +46,7 @@ async function getTasks() {
     })
 
     if (!response.ok) {
+        HandleErrorApi(response);
         return;
     }
 
