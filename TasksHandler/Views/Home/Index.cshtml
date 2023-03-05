@@ -33,6 +33,8 @@
 
 </div>
 
+<partial name="_EditTaskModal" />
+
 @section Scripts {
     <script src="~/js/Tasks.js" asp-append-version="true"></script>
     <script src="~/js/Utilities.js" asp-append-version="true"></script>
@@ -40,6 +42,9 @@
     <script>
 
         const urlTasks = '/api/Tasks';
+
+        const EditTaskModal = document.getElementById('edit-task-modal');
+        const EditTaskModalBootstrap = new bootstrap.Modal(EditTaskModal);
 
         function TasksListDTOfn () {
             var self = this;
@@ -73,6 +78,7 @@
 
         getTasks();
 
-        ko.applyBindings(TasksListDTO, document.getElementById("tasks-list-container"));
+        ko.applyBindings(TasksListDTO, document.getElementById('tasks-list-container'));
+        ko.applyBindings(TaskEditVM, document.getElementById('edit-task-modal'));
     </script>
 }

@@ -91,7 +91,7 @@ async function sendTasksIdsToBackend(ids) {
     });
 }
 
- async function TaskClickHandler(task) {
+async function TaskClickHandler(task) {
     if (task.isNew()) {
         return;
     }
@@ -109,13 +109,15 @@ async function sendTasksIdsToBackend(ids) {
     }
 
     const json = await response.json();
-     console.log(json);
+    console.log(json);
 
-     TaskEditVM.id = json.id;
-     TaskEditVM.title(json.Title);
-     TaskEditVM.description(json.description);
+    TaskEditVM.id = json.id;
+    TaskEditVM.title(json.title);
+    TaskEditVM.description(json.description);
 
+    EditTaskModalBootstrap.show();
 }
+
 
 
 $(function () {
