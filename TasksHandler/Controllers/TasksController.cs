@@ -80,6 +80,26 @@ namespace TasksHandler.Controllers
             return task;
         }
 
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> EditTask(int id, [FromBody] EditTaskDTO editTaskDTO)
+        {
+            var UserId = usersService.getUserId();
+
+            var task = await applicationDbContext.Tasks.FirstOrDefaultAsync(t => t.Id == id
+            && t.UserCreatedId == UserId);
+
+            if(task is null)
+            {
+                return NotFound();
+            }
+
+            task.Title= editTaskDTO.Title;
+            task.Description= editTaskDTO.Description;
+            await applicationDbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [HttpPost("sort")]
         public async Task<IActionResult> Sort([FromBody] int[] ids)
         {

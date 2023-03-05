@@ -42,7 +42,7 @@ async function getTasks() {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
-            }
+        }
     })
 
     if (!response.ok) {
@@ -119,6 +119,41 @@ async function TaskClickHandler(task) {
 }
 
 
+async function EditChangeTaskHandler() {
+    const obj = {
+        id: TaskEditVM.id,
+        title: TaskEditVM.title(),
+        description: TaskEditVM.description()
+    };
+
+    if (!obj.title) {
+        return;
+    }
+
+    await editCompleteTask(obj);
+
+    const indice = TasksListDTO.tasks().findIndex(t => t.id() === obj.id);
+    const task = TasksListDTO.tasks()[indice];
+    task.title = obj.title;
+    getTasks();
+}
+
+async function editCompleteTask(task) {
+    const data = JSON.stringify(task);
+
+    const response = await fetch(`${urlTasks}/${task.id}`, {
+        method: 'PUT',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        HandleErrorApi(response);
+        throw "error";
+    }
+}
 
 $(function () {
     $("#reordenable").sortable({
@@ -126,5 +161,5 @@ $(function () {
         stop: async function () {
             await updateTasksOrder();
         }
-        })
+    })
 })
