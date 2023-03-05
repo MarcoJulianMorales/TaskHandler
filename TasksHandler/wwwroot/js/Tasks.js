@@ -138,6 +138,40 @@ async function EditChangeTaskHandler() {
     getTasks();
 }
 
+function DeleteTaskChoose(task) {
+    EditTaskModalBootstrap.hide();
+
+    confirmAction({
+        callBackAccept: () => {
+            deleteTask(task);
+        },
+        callBackCancel: () => {
+            EditTaskModalBootstrap.show();
+        },
+        title: `Do you want to delete the task ${task.title()}?`
+        })
+}
+
+async function deleteTask(task) {
+    const idTask = task.id;
+
+    const response = await fetch(`${urlTasks}/${idTask}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (response.ok) {
+        const indice = getEditTaskIndex();
+        TasksListDTO.tasks.splice(indice, 1);
+    }
+}
+
+function getEditTaskIndex() {
+    return TasksListDTO.tasks().findIndex(t => t.id() == TaskEditVM.id);
+}
+
 async function editCompleteTask(task) {
     const data = JSON.stringify(task);
 

@@ -19,3 +19,22 @@ function showErrorMessage(message) {
         text: message
     });
 }
+
+function confirmAction({ callBackAccept, callBackCancel, title }) {
+    Swal.fire({
+        title: title || 'Are you sure?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes',
+        focusConfirm: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            callBackAccept();
+        } else {
+            //user clicked cancel
+            callBackCancel();
+        }
+    })
+}

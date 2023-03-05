@@ -99,6 +99,23 @@ namespace TasksHandler.Controllers
 
             return Ok();
         }
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var userId = usersService.getUserId();
+
+            var task = await applicationDbContext.Tasks.FirstOrDefaultAsync(t => t.Id == id
+            && t.UserCreatedId == userId);
+
+            if(task is null)
+            {
+                return NotFound();
+            }
+
+            applicationDbContext.Remove(task);
+            await applicationDbContext.SaveChangesAsync();
+            return Ok();
+        }
 
         [HttpPost("sort")]
         public async Task<IActionResult> Sort([FromBody] int[] ids)
