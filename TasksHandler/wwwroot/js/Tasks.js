@@ -197,6 +197,11 @@ async function editCompleteTask(task) {
     }
 }
 
+function getEditTask() {
+    const indice = getEditTaskIndex();
+    return TasksListDTO.tasks()[indice];
+}
+
 $(function () {
     $("#reordenable").sortable({
         axis: 'y',

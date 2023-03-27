@@ -51,7 +51,15 @@ async function insertStep(step, data, idTask) {
 
     if (response.ok) {
         const json = await response.json();
-        step.id(json.id)
+        step.id(json.id);
+
+        const task = getEditTask();
+        task.totalSteps(task.totalSteps() + 1);
+
+        if (step.done()) {
+            task.doneSteps(task.doneSteps() + 1);
+        }
+
     } else {
         HandleErrorApi(response)
     }
@@ -92,5 +100,52 @@ function ClickCheckBoxStep(step) {
     const data = getStepPetitionBody(step);
     UpdateStep(data, step.id());
 
+    const task = getEditTask();
+
+    let currentDoneSteps = task.doneSteps();
+
+    if (step.done()) {
+        currentDoneSteps++;
+    } else {
+        currentDoneSteps--;
+    }
+
+    task.doneSteps(currentDoneSteps);
+
     return true;
+}
+
+function ClickDeleteStep(step) {
+    EditTaskModalBootstrap.hide();
+    confirmAction({
+        callBackAccept: () => {
+            DeteleStep(step);
+            EditTaskModalBootstrap.show();
+        },
+        callBackCancel: () => {
+            EditTaskModalBootstrap.show();
+        },
+        title: `Delete Step?`
+        })
+}
+
+async function DeteleStep(step) {
+    const response = await fetch(`${urlSteps}/${step.id()}`, {
+        method: "DELETE"
+    });
+
+    if (!response.ok) {
+        HandleErrorApi(response);
+        return;
+    }
+
+    TaskEditVM.steps.remove(function (item) { return item.id() == step.id() });
+
+    const task = getEditTask();
+
+    task.totalSteps(task.totalSteps() - 1);
+
+    if (step.done()) {
+        task.doneSteps(task.doneSteps() - 1);
+    }
 }

@@ -18,6 +18,12 @@
             <div data-bind="text: Title, hidden:isNew" class="fw-bold">
 
             </div>
+
+            <div name="steps-resume" data-bind="visible:totalSteps() > 0">
+                <span data-bind="text: doneSteps"></span>/<span data-bind="text: totalSteps"></span>
+                <span data-bind="text: donePercentaje"></span>
+            </div>
+
             <input type="text" name="Title-task" autocomplete="off"
             data-bind="value:Title, visible: isNew, attr:{'data-id':id}, event:{focusout: focusoutTaskTitle}" />
         </div>
@@ -61,12 +67,22 @@
             })
         }
 
-        function TasksElementListDTO({id, title}){
+        function TasksElementListDTO({id, title, totalSteps, doneSteps}){
             var self = this;
             self.id = ko.observable(id);
             self.Title = ko.observable(title);
+
+            self.totalSteps = ko.observable(totalSteps);
+            self.doneSteps = ko.observable(doneSteps);
+
             self.isNew = ko.pureComputed(function () {
                 return self.id() == 0;
+            })
+
+            self.donePercentaje = ko.pureComputed(function () {
+                const calc = Math.round(self.doneSteps() * 1.0 / self.totalSteps() *100);
+
+                return `(${calc}%)`;
             })
         }
 

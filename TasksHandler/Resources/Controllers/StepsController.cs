@@ -79,5 +79,28 @@ namespace TasksHandler.Resources.Controllers
 
             return Ok();
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            var userId = usersService.getUserId();
+
+            var step = await context.Steps.Include(p => p.task).FirstOrDefaultAsync(p => p.Id == id);
+
+            if (step is null)
+            {
+                return NotFound();
+            }
+
+            if(step.task.UserCreatedId!= userId)
+            {
+                return Forbid();
+            }
+
+            context.Steps.Remove(step);
+            await context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }
