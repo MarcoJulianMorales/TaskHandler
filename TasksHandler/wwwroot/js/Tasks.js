@@ -115,6 +115,14 @@ async function TaskClickHandler(task) {
     TaskEditVM.title(json.title);
     TaskEditVM.description(json.description);
 
+    TaskEditVM.steps([]);
+
+    json.steps.forEach(step => {
+        TaskEditVM.steps.push(
+            new StepViewModel({ ...step, editMode: false })
+            )
+    })
+
     EditTaskModalBootstrap.show();
 }
 

@@ -16,7 +16,7 @@
                 <input type="checkbox" class="form-check-input" name="chbStep" data-bind="{checked:done}"/>
             </div>
             <div class="col-11">
-                <span data-bind="text:description, hidden: editMode"></span>
+                <span data-bind="text:description, hidden: editMode, css: {'text-decoration-line-through': done}"></span>
                 <textarea name="txtStepDescription" class="form-control" placeholder="Add description" data-bind="value:description, visible: editMode"></textarea>
                 <div class="mt-2" data-bind="value:description, visible: editMode">
                     <button class="btn btn-primary" data-bind="{click: SaveStep}">Save</button>

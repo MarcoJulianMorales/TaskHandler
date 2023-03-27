@@ -42,7 +42,9 @@ namespace TasksHandler.Controllers
         {
             var UserId = usersService.getUserId();
 
-            var task = await applicationDbContext.Tasks.FirstOrDefaultAsync(t => t.Id== id 
+            var task = await applicationDbContext.Tasks
+                .Include(t => t.Steps)
+                .FirstOrDefaultAsync(t => t.Id== id 
             && t.UserCreatedId == UserId);
 
             if(task is null)
