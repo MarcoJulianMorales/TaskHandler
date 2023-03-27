@@ -18,6 +18,10 @@
             <div class="col-11">
                 <span data-bind="text:description, hidden: editMode"></span>
                 <textarea name="txtStepDescription" class="form-control" placeholder="Add description" data-bind="value:description, visible: editMode"></textarea>
+                <div class="mt-2" data-bind="value:description, visible: editMode">
+                    <button class="btn btn-primary" data-bind="{click: SaveStep}">Save</button>
+                    <button class="btn btn-secondary" data-bind="{click: CancelStep}">Cancel</button>
+                </div>
             </div>
         </div>
     </div>

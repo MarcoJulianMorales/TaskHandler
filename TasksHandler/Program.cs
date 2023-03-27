@@ -8,6 +8,7 @@ using System.Globalization;
 using TasksHandler;
 using Microsoft.AspNetCore.Mvc.Razor;
 using TasksHandler.Services;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,9 @@ builder.Services.AddControllersWithViews(options =>
 .AddDataAnnotationsLocalization(options =>
 {
     options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource));
+}).AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
 //Configurando ApplicationDbContext como un servicio
