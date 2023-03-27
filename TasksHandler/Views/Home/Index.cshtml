@@ -38,6 +38,7 @@
 @section Scripts {
     <script src="~/js/Tasks.js" asp-append-version="true"></script>
     <script src="~/js/Utilities.js" asp-append-version="true"></script>
+    <script src="~/js/Steps.js" asp-append-version="true"></script>
 
     <script>
 
@@ -71,10 +72,23 @@
         const TaskEditVM = {
             id: 0,
             title: ko.observable(''),
-            description: ko.observable('')
+            description: ko.observable(''),
+            steps: ko.observableArray([])
         }
 
         const TasksListDTO = new TasksListDTOfn();
+
+        function StepViewModel({ id, description, done, editMode }) {
+            var self = this;
+            self.id = ko.observable(id || 0);
+            self.description = ko.observable(description || '');
+            self.done = ko.observable(done);
+            self.editMode = ko.observable(editMode);
+
+            self.isNew = ko.pureComputed(function(){
+                return self.id() == 0;
+            })
+        }
 
         getTasks();
 

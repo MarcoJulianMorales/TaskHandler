@@ -24,7 +24,7 @@ builder.Services.AddControllersWithViews(options =>
     options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource));
 });
 
-
+//Configurando ApplicationDbContext como un servicio
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("name=DefaultConnection") );
 
 builder.Services.AddAuthentication();
