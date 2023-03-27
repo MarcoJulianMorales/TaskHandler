@@ -83,6 +83,7 @@
             var self = this;
             self.id = ko.observable(id || 0);
             self.description = ko.observable(description || '');
+            self.prevDescription = '';
             self.done = ko.observable(done);
             self.editMode = ko.observable(editMode);
 

@@ -11,7 +11,8 @@ function CancelStep(step) {
     if (step.isNew()) {
         TaskEditVM.steps.pop();
     } else {
-
+        step.editMode(false);
+        step.description(step.prevDescription);
     }
 }
 
@@ -21,10 +22,21 @@ async function SaveStep(step) {
     const idTask = TaskEditVM.id;
     const data = getStepPetitionBody(step);
 
+    const description = step.description();
+
+    if (!description) {
+        step.description(step.prevDescription);
+
+        if (isNew) {
+            TaskEditVM.steps.pop();
+        }
+        return;
+    }
+
     if (isNew) {
         await insertStep(step, data, idTask);
     } else {
-
+        UpdateStep(data, step.id());
     }
 }
 
@@ -50,4 +62,35 @@ function getStepPetitionBody(step) {
         description: step.description(),
         done: step.done()
     });
+}
+
+function EditStepDescription(step) {
+    step.editMode(true);
+    step.prevDescription = step.description();
+    $("[name=txtStepDescription]:visible").focus();
+}
+
+async function UpdateStep(data, id) {
+    const response = await fetch(`${urlSteps}/${id}`, {
+        body: data,
+        method: "PUT",
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        HandleErrorApi(response);
+    }
+}
+
+function ClickCheckBoxStep(step) {
+    if (step.isNew()) {
+        return true;
+    }
+
+    const data = getStepPetitionBody(step);
+    UpdateStep(data, step.id());
+
+    return true;
 }

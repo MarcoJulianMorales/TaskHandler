@@ -55,5 +55,29 @@ namespace TasksHandler.Resources.Controllers
 
             return step;
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(Guid id, [FromBody] CreateStepDTO createStepDTO)
+        {
+            var userId = usersService.getUserId();
+
+            var step = await context.Steps.Include(p => p.task).FirstOrDefaultAsync(p => p.Id== id);
+
+            if(step is null) { 
+                return NotFound(); 
+            }
+
+            if(step.task.UserCreatedId != userId)
+            {
+                return Forbid();
+            }
+
+            step.Description = createStepDTO.Description;
+            step.Done = createStepDTO.Done;
+
+            await context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }
