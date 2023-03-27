@@ -102,5 +102,41 @@ namespace TasksHandler.Resources.Controllers
 
             return Ok();
         }
+        [HttpPost("order/{taskId:int}")]
+        public async Task<IActionResult> Order(int taskId, [FromBody] Guid [] ids)
+        {
+            var userId = usersService.getUserId();
+
+            var task = await context.Tasks.FirstOrDefaultAsync(t => t.Id== taskId
+            && t.UserCreatedId == userId);
+
+            if(task is null)
+            {
+                return NotFound();
+            }
+
+            var steps = await context.Steps.Where(x => x.TasksId==taskId).ToListAsync();
+
+            var stepsIds = steps.Select(x => x.Id);
+
+            var setpsIdsNotBelongToTask = ids.Except(stepsIds).ToList();
+
+            if(setpsIdsNotBelongToTask.Any())
+            {
+                return BadRequest("Not all steps are present");
+            }
+
+            var stepsDictionary = steps.ToDictionary(p => p.Id);
+
+            for(int i=0; i<ids.Length; i++)
+            {
+                var stepId = ids[i];
+                var step = stepsDictionary[stepId];
+                step.Orden = i + 1;
+            }
+
+            await context.SaveChangesAsync();
+            return Ok();
+        }
     }
 }

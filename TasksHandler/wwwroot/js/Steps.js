@@ -149,3 +149,41 @@ async function DeteleStep(step) {
         task.doneSteps(task.doneSteps() - 1);
     }
 }
+
+async function updateStepsOrder() {
+    const ids = getIdsSteps();
+    await sendIdsStepsBackEnd(ids);
+
+    const sortedArray = TaskEditVM.steps.sorted(function (a, b) {
+        return ids.indexOf(a.id().toString()) - ids.indexOf(b.id().toString());
+    })
+
+    TaskEditVM.steps(sortedArray);
+}
+
+function getIdsSteps() {
+    const ids = $("[name=chbStep]").map(function () {
+        return $(this).attr('data-id')
+    }).get();
+    return ids;
+}
+
+async function sendIdsStepsBackEnd(ids) {
+    var data = JSON.stringify(ids);
+    const response = await fetch(`${urlSteps}/order/${TaskEditVM.id}`, {
+        method: "POST",
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+}
+
+$(function () {
+    $("#reordenable-steps").sortable({
+        axis: 'y',
+        stop: async function () {
+            await updateStepsOrder();
+        }
+        })
+})

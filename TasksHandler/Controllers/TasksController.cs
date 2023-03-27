@@ -43,7 +43,7 @@ namespace TasksHandler.Controllers
             var UserId = usersService.getUserId();
 
             var task = await applicationDbContext.Tasks
-                .Include(t => t.Steps)
+                .Include(t => t.Steps.OrderBy(p => p.Orden))
                 .FirstOrDefaultAsync(t => t.Id== id 
             && t.UserCreatedId == UserId);
 
