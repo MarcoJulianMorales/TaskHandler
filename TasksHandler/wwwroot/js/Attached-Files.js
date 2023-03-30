@@ -45,3 +45,37 @@ function prepareAttachedFiles(attachedFiles) {
             new attachedFileVM({ ...attachedFile, editMode: false }));
     });
 }
+
+let prevtitleAttachedFile;
+function ClickTitleAttachedFile(attachedFile) {
+    attachedFile.editMode(true);
+    prevtitleAttachedFile = attachedFile.title();
+    $("[name='txtTitleAttachedFile']:visible").focus();
+}
+
+async function HandleFocusoutAttachedFile(attachedFile) {
+    attachedFile.editMode(false);
+    const idTask = attachedFile.id;
+
+    if (!attachedFile.title()) {
+        attachedFile.title(prevtitleAttachedFile);
+    }
+
+    if (attachedFile.title() === prevtitleAttachedFile) {
+        return;
+    }
+
+    const data = JSON.stringify(attachedFile.title());
+
+    const response = await fetch(`${urlFiles}/${idTask}`, {
+        body: data,
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+            }
+    });
+
+    if (!response.ok) {
+        HandleErrorApi(response);
+    }
+}

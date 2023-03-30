@@ -11,7 +11,15 @@
 
 <div data-bind="foreach: attachedFiles">
     <div>
-        <div style="cursor:pointer" data-bind="text:title"></div>
+        <div class="fw-bold" style="cursor:pointer" 
+            data-bind="text:title, hidden: editMode, click: ClickTitleAttachedFile">
+        </div>
+        
+        <div data-bind="visible:editMode, event: {focusout: HandleFocusoutAttachedFile}">
+            <input name="txtTitleAttachedFile" type="text" class="form-control"
+            data-bind="value: title, attr:{'data-id':id}"/>
+        </div>
+        
         <div>
             Added <span data-bind="text: published"></span> - 
             <span class="fw-bold" style="cursor: pointer">Delete</span> - 

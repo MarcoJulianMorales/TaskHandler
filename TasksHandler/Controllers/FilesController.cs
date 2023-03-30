@@ -59,5 +59,28 @@ namespace TasksHandler.Controllers
 
             return attachedFiles.ToList();
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] string title)
+        {
+            var userId = usersService.getUserId();
+
+            var attachedFile = await context.AttachedFiles.
+                Include(a => a.Task).FirstOrDefaultAsync(a => a.Id == id);
+
+            if (attachedFile == null)
+            {
+                return NotFound();
+            }
+
+            if(attachedFile.Task.UserCreatedId!= userId)
+            {
+                return Forbid();
+            }
+
+            attachedFile.Tittle = title;
+            await context.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
