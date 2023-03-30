@@ -45,6 +45,7 @@
     <script src="~/js/Tasks.js" asp-append-version="true"></script>
     <script src="~/js/Utilities.js" asp-append-version="true"></script>
     <script src="~/js/Steps.js" asp-append-version="true"></script>
+    <script src="~/js/Attached-Files.js" asp-append-version="true"></script>
 
     <script>
 
@@ -90,7 +91,8 @@
             id: 0,
             title: ko.observable(''),
             description: ko.observable(''),
-            steps: ko.observableArray([])
+            steps: ko.observableArray([]),
+            attachedFiles: ko.observableArray([])
         }
 
         const TasksListDTO = new TasksListDTOfn();

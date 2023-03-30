@@ -50,6 +50,7 @@ builder.Services.AddLocalization(options =>
 
 builder.Services.AddTransient<IUsersService, UsersService>();
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddTransient<IFilesRepository, LocalFilesStore>();
 
 var app = builder.Build();
 
