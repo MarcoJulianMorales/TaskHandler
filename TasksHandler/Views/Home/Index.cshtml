@@ -111,6 +111,16 @@
             })
         }
 
+        function attachedFileVM({ id, tittle, published, editMode, orden, url }){
+            var self = this;
+            self.id = id;
+            self.title = ko.observable(tittle || '');
+            self.published = published;
+            self.editMode = ko.observable(editMode);
+            self.orden = orden;
+            self.url = url;
+        }
+
         getTasks();
 
         ko.applyBindings(TasksListDTO, document.getElementById('tasks-list-container'));

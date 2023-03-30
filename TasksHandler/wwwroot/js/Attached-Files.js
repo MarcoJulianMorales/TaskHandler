@@ -26,6 +26,22 @@ async function SelectTaskFile(event) {
 
     const json = await response.json();
     console.log(json);
+    prepareAttachedFiles(json);
 
     inputTaskFile.value = null;
+}
+
+function prepareAttachedFiles(attachedFiles) {
+    attachedFiles.forEach(attachedFile => {
+        let creationDate = attachedFile.creationDate;
+        if (attachedFile.creationDate.indexOf('Z') === -1) {
+            creationDate += 'Z';
+        }
+
+        const creationDateDT = new Date(creationDate);
+        attachedFile.published = creationDateDT.toLocaleString();
+
+        TaskEditVM.attachedFiles.push(
+            new attachedFileVM({ ...attachedFile, editMode: false }));
+    });
 }

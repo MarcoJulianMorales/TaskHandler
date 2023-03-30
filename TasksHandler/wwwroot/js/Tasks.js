@@ -123,6 +123,8 @@ async function TaskClickHandler(task) {
             )
     })
 
+    prepareAttachedFiles(json.attachedFiles);
+
     EditTaskModalBootstrap.show();
 }
 

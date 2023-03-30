@@ -44,6 +44,7 @@ namespace TasksHandler.Controllers
 
             var task = await applicationDbContext.Tasks
                 .Include(t => t.Steps.OrderBy(p => p.Orden))
+                .Include(t => t.AttachedFiles.OrderBy(a => a.Orden))
                 .FirstOrDefaultAsync(t => t.Id== id 
             && t.UserCreatedId == UserId);
 
