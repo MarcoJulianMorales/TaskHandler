@@ -40,6 +40,11 @@ namespace TasksHandler.Services
                 var fileName = $"{Guid.NewGuid()}{extension}";
                 string folder = Path.Combine(env.WebRootPath,container);
 
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
+
                 string path = Path.Combine(folder, fileName);
                 using(var ms = new MemoryStream())
                 {

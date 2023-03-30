@@ -6,13 +6,14 @@
 
 <label><i class="bi bi-paperclip">Attach files</i></label>
 <button onclick="ClickAttachFile()"><i class="bg-info bi-plus"></i></button>
-<input type="file" id="TaskFile" multiple style="display:none"/>
+<input type="file" onchange="SelectTaskFile(event)"
+    id="TaskFile" multiple style="display:none"/>
 
 <div data-bind="foreach: attachedFiles">
     <div>
         <div style="cursor:pointer" data-bind="text:title">
             <div>
-                Added <span data-bind="text:title published"></span>
+                Added <span data-bind="text: published"></span>
                 <span class="fw-bold" style="cursor: pointer">Delete</span>
                 <span class="fw-bold" style="cursor:pointer">Donwload</span>
             </div>
