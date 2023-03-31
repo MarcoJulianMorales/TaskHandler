@@ -79,3 +79,35 @@ async function HandleFocusoutAttachedFile(attachedFile) {
         HandleErrorApi(response);
     }
 }
+
+function ClickDeleteAttachedFile(attachedFile) {
+    EditTaskModalBootstrap.hide();
+
+    confirmAction({
+        callBackAccept: () => {
+            deleteAttachedFile(attachedFile);
+            EditTaskModalBootstrap.show();
+        },
+        callBackCancel: () => {
+            EditTaskModalBootstrap.show();
+        },
+        title: 'Delete attached file?'
+        })
+}
+
+async function deleteAttachedFile(attachedFile) {
+    const response = await fetch(`${urlFiles}/${attachedFile.id}`, {
+        method: 'DELETE'
+    });
+
+    if (!response.ok) {
+        HandleErrorApi(response);
+        //return;
+    }
+
+    TaskEditVM.attachedFiles.remove(function (item) { return item.id == attachedFile.id });
+}
+
+function ClickDownloadAttachedFile(attachedFile) {
+    downloadFile(attachedFile.url, attachedFile.title());
+}

@@ -82,5 +82,29 @@ namespace TasksHandler.Controllers
             await context.SaveChangesAsync();
             return Ok();
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var userId = usersService.getUserId();
+
+            var attachedFile = await context.AttachedFiles.Include(a => a.Task)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (attachedFile is null)
+            {
+                return NotFound();
+            }
+
+            if (attachedFile.Task.UserCreatedId != userId)
+            {
+                return Forbid();
+            }
+
+            context.Remove(attachedFile);
+            await context.SaveChangesAsync();
+            await filesRepository.Delete(attachedFile.Url, container);
+            return Ok();
+        }
     }
 }

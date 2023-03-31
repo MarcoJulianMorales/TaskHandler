@@ -5,7 +5,7 @@
 }
 
 <label><i class="bi bi-paperclip">Attach files</i></label>
-<button onclick="ClickAttachFile()"><i class="bg-info bi-plus"></i></button>
+<button class="btn btn-secondary btn-sm" onclick="ClickAttachFile()"><i class="bi-info bi-plus "></i></button>
 <input type="file" onchange="SelectTaskFile(event)"
     id="TaskFile" multiple style="display:none"/>
 
@@ -22,8 +22,8 @@
         
         <div>
             Added <span data-bind="text: published"></span> - 
-            <span class="fw-bold" style="cursor: pointer">Delete</span> - 
-            <span class="fw-bold" style="cursor:pointer">Donwload</span>
+            <span class="fw-bold" style="cursor: pointer" data-bind="click: ClickDeleteAttachedFile">Delete</span> - 
+            <span class="fw-bold" style="cursor:pointer" data-bind="click: ClickDownloadAttachedFile">Donwload</span>
         </div>
     </div>
 </div>
