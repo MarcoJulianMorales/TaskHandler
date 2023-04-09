@@ -123,7 +123,11 @@ async function TaskClickHandler(task) {
             )
     })
 
+    TaskEditVM.attachedFiles([]);
+
     prepareAttachedFiles(json.attachedFiles);
+
+
 
     EditTaskModalBootstrap.show();
 }
